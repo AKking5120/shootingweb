@@ -3,6 +3,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { blogPosts as seedBlogs } from "@/data/blogs";
 import { siteConfig, socialLinks } from "@/data/site";
+import { isSupabaseEnabled } from "@/lib/supabase";
 import type { BlogPost, ContactMessage, SiteSettings, BlogBlock } from "@/types";
 
 const DATA_DIR = path.join(process.cwd(), "data", "content");
@@ -92,20 +93,38 @@ export function contentToText(blocks: BlogBlock[]): string {
     .join("\n\n");
 }
 
-export async function getBlogs(): Promise<BlogPost[]> {
+async function getStore() {
+  if (isSupabaseEnabled()) {
+    return import("@/lib/store-supabase");
+  }
+  return null;
+}
+
+async function getBlogsFromFile(): Promise<BlogPost[]> {
   const blogs = await readJson<BlogPost[]>("blogs.json", seedBlogs);
   return blogs.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 }
 
+export async function getBlogs(): Promise<BlogPost[]> {
+  const store = await getStore();
+  if (store) return store.getBlogs();
+  return getBlogsFromFile();
+}
+
 export async function getBlogBySlug(slug: string) {
-  const blogs = await getBlogs();
+  const store = await getStore();
+  if (store) return store.getBlogBySlug(slug);
+  const blogs = await getBlogsFromFile();
   return blogs.find((b) => b.slug === slug);
 }
 
 export async function saveBlog(post: BlogPost) {
-  const blogs = await getBlogs();
+  const store = await getStore();
+  if (store) return store.saveBlog(post);
+
+  const blogs = await getBlogsFromFile();
   const index = blogs.findIndex((b) => b.slug === post.slug);
   if (index >= 0) blogs[index] = post;
   else blogs.unshift(post);
@@ -114,7 +133,10 @@ export async function saveBlog(post: BlogPost) {
 }
 
 export async function deleteBlog(slug: string) {
-  const blogs = await getBlogs();
+  const store = await getStore();
+  if (store) return store.deleteBlog(slug);
+
+  const blogs = await getBlogsFromFile();
   await writeJson(
     "blogs.json",
     blogs.filter((b) => b.slug !== slug)
@@ -122,6 +144,9 @@ export async function deleteBlog(slug: string) {
 }
 
 export async function getMessages(): Promise<ContactMessage[]> {
+  const store = await getStore();
+  if (store) return store.getMessages();
+
   const messages = await readJson<ContactMessage[]>("messages.json", []);
   return messages.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -131,6 +156,9 @@ export async function getMessages(): Promise<ContactMessage[]> {
 export async function addMessage(
   data: Omit<ContactMessage, "id" | "read" | "createdAt">
 ) {
+  const store = await getStore();
+  if (store) return store.addMessage(data);
+
   const messages = await getMessages();
   const message: ContactMessage = {
     ...data,
@@ -144,6 +172,9 @@ export async function addMessage(
 }
 
 export async function markMessageRead(id: string, read: boolean) {
+  const store = await getStore();
+  if (store) return store.markMessageRead(id, read);
+
   const messages = await getMessages();
   const index = messages.findIndex((m) => m.id === id);
   if (index >= 0) {
@@ -154,6 +185,9 @@ export async function markMessageRead(id: string, read: boolean) {
 }
 
 export async function deleteMessage(id: string) {
+  const store = await getStore();
+  if (store) return store.deleteMessage(id);
+
   const messages = await getMessages();
   await writeJson(
     "messages.json",
@@ -162,15 +196,22 @@ export async function deleteMessage(id: string) {
 }
 
 export async function getSettings(): Promise<SiteSettings> {
+  const store = await getStore();
+  if (store) return store.getSettings();
   return readJson<SiteSettings>("settings.json", defaultSettings);
 }
 
 export async function saveSettings(settings: SiteSettings) {
+  const store = await getStore();
+  if (store) return store.saveSettings(settings);
   await writeJson("settings.json", settings);
   return settings;
 }
 
 export async function getDashboardStats() {
+  const store = await getStore();
+  if (store) return store.getDashboardStats();
+
   const [blogs, messages] = await Promise.all([getBlogs(), getMessages()]);
   return {
     totalBlogs: blogs.length,
