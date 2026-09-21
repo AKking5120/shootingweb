@@ -10,6 +10,7 @@ export const siteConfig = {
   url: "https://symediaandmarketing.com",
   email: "hello@symediaandmarketing.com",
   phone: "+91 XXXXX XXXXX",
+  whatsapp: "+91 XXXXX XXXXX",
   copyright: "© 2026 SY Media & Marketing. All rights reserved.",
 };
 

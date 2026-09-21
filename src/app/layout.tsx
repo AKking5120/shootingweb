@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk, Caveat } from "next/font/google";
 import { siteConfig } from "@/data/site";
 import { AdsTracking } from "@/components/AdsTracking";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 import "./globals.css";
 
 const inter = Inter({
@@ -73,6 +74,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-background font-sans text-white antialiased">
         <AdsTracking />
         {children}
+        <WhatsAppButton />
       </body>
     </html>
   );
