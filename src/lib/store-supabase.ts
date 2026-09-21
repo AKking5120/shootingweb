@@ -1,4 +1,5 @@
 import "server-only";
+import { unstable_noStore as noStore } from "next/cache";
 import { blogPosts as seedBlogs } from "@/data/blogs";
 import { siteConfig, socialLinks } from "@/data/site";
 import { getSupabase } from "@/lib/supabase";
@@ -34,7 +35,8 @@ interface MessageRow {
   service: string;
   budget: string;
   message: string;
-  read: boolean;
+  is_read?: boolean;
+  read?: boolean;
   created_at: string;
 }
 
@@ -114,7 +116,7 @@ function rowToMessage(row: MessageRow): ContactMessage {
     service: row.service,
     budget: row.budget,
     message: row.message,
-    read: row.read,
+    read: row.is_read ?? row.read ?? false,
     createdAt: row.created_at,
   };
 }
@@ -235,6 +237,7 @@ export async function deleteBlog(slug: string) {
 }
 
 export async function getMessages(): Promise<ContactMessage[]> {
+  noStore();
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from("messages")
@@ -242,7 +245,7 @@ export async function getMessages(): Promise<ContactMessage[]> {
     .order("created_at", { ascending: false });
 
   if (error) throw error;
-  return (data as MessageRow[]).map(rowToMessage);
+  return ((data ?? []) as MessageRow[]).map(rowToMessage);
 }
 
 export async function addMessage(
@@ -258,10 +261,24 @@ export async function addMessage(
     service: data.service,
     budget: data.budget,
     message: data.message,
-    read: false,
+    is_read: false,
   };
 
-  const { error } = await supabase.from("messages").insert(message);
+  let { error } = await supabase.from("messages").insert(message);
+  if (error && error.message.toLowerCase().includes("is_read")) {
+    const retry = await supabase.from("messages").insert({
+      id: message.id,
+      name: message.name,
+      company: message.company,
+      email: message.email,
+      phone: message.phone,
+      service: message.service,
+      budget: message.budget,
+      message: message.message,
+      read: false,
+    });
+    error = retry.error;
+  }
   if (error) throw error;
 
   return rowToMessage({
@@ -272,12 +289,23 @@ export async function addMessage(
 
 export async function markMessageRead(id: string, read: boolean) {
   const supabase = getSupabase();
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from("messages")
-    .update({ read })
+    .update({ is_read: read })
     .eq("id", id)
     .select("*")
     .maybeSingle();
+
+  if (error && error.message.toLowerCase().includes("is_read")) {
+    const retry = await supabase
+      .from("messages")
+      .update({ read })
+      .eq("id", id)
+      .select("*")
+      .maybeSingle();
+    data = retry.data;
+    error = retry.error;
+  }
 
   if (error) throw error;
   return data ? rowToMessage(data as MessageRow) : undefined;

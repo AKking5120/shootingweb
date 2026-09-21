@@ -3,16 +3,24 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 let adminClient: SupabaseClient | null = null;
 
-export function isSupabaseEnabled(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY
+function getSupabaseUrl() {
+  return process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+}
+
+function getServiceRoleKey() {
+  return (
+    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
+    process.env.SUPABASE_SERVICE_KEY?.trim()
   );
 }
 
+export function isSupabaseEnabled(): boolean {
+  return Boolean(getSupabaseUrl() && getServiceRoleKey());
+}
+
 export function getSupabase(): SupabaseClient {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const url = getSupabaseUrl();
+  const key = getServiceRoleKey();
 
   if (!url || !key) {
     throw new Error(

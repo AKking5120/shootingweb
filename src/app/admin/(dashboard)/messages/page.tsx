@@ -1,14 +1,14 @@
-import { getMessages } from "@/lib/store";
+import { connection } from "next/server";
 import { MessagesList } from "@/components/admin/MessagesList";
 
 export default async function AdminMessagesPage() {
-  const messages = await getMessages();
+  await connection();
 
   return (
     <div>
       <h1 className="text-3xl font-bold">Messages</h1>
       <p className="mt-2 text-muted">Client enquiries from the contact form</p>
-      <MessagesList messages={messages} />
+      <MessagesList />
     </div>
   );
 }

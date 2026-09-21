@@ -5,42 +5,57 @@ import { useRouter } from "next/navigation";
 import { Mail, Trash2, Check, RefreshCw } from "lucide-react";
 import type { ContactMessage } from "@/types";
 
-export function MessagesList({
-  messages: initialMessages,
-}: {
-  messages: ContactMessage[];
-}) {
+export function MessagesList() {
   const router = useRouter();
-  const [messages, setMessages] = useState(initialMessages);
-  const [selected, setSelected] = useState<ContactMessage | null>(
-    initialMessages[0] || null
-  );
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [selected, setSelected] = useState<ContactMessage | null>(null);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
-  useEffect(() => {
-    setMessages(initialMessages);
-    setSelected(initialMessages[0] || null);
-  }, [initialMessages]);
+  const [error, setError] = useState("");
 
   const refreshMessages = useCallback(async () => {
     setRefreshing(true);
+    setError("");
+
     try {
-      const res = await fetch("/api/admin/messages", { cache: "no-store" });
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setMessages(data);
-          setSelected((current) => {
-            if (!current) return data[0] || null;
-            return data.find((msg: ContactMessage) => msg.id === current.id) || data[0] || null;
-          });
-        }
+      const res = await fetch("/api/admin/messages", {
+        cache: "no-store",
+        credentials: "include",
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        setError(
+          typeof data?.error === "string"
+            ? data.error
+            : "Could not load messages. Please log in again."
+        );
+        return;
       }
+
+      if (!Array.isArray(data)) {
+        setError("Unexpected response from server.");
+        return;
+      }
+
+      setMessages(data);
+      setSelected((current) => {
+        if (!current) return data[0] || null;
+        return data.find((msg) => msg.id === current.id) || data[0] || null;
+      });
+    } catch {
+      setError("Network error while loading messages.");
     } finally {
+      setLoading(false);
       setRefreshing(false);
       router.refresh();
     }
   }, [router]);
+
+  useEffect(() => {
+    refreshMessages();
+  }, [refreshMessages]);
 
   useEffect(() => {
     const interval = setInterval(refreshMessages, 30000);
@@ -52,20 +67,29 @@ export function MessagesList({
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ read }),
+      credentials: "include",
     });
     await refreshMessages();
   };
 
   const deleteMsg = async (id: string) => {
     if (!confirm("Delete this message?")) return;
-    await fetch(`/api/admin/messages/${id}`, { method: "DELETE" });
+    await fetch(`/api/admin/messages/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
     setSelected(null);
     await refreshMessages();
   };
 
   return (
     <div>
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex items-center justify-between gap-4">
+        <p className="text-sm text-muted">
+          {loading
+            ? "Loading messages..."
+            : `${messages.length} message${messages.length === 1 ? "" : "s"}`}
+        </p>
         <button
           type="button"
           onClick={refreshMessages}
@@ -77,7 +101,17 @@ export function MessagesList({
         </button>
       </div>
 
-      {messages.length === 0 ? (
+      {error && (
+        <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="mt-8 rounded-2xl border border-border p-12 text-center text-muted">
+          Loading messages from database...
+        </div>
+      ) : messages.length === 0 && !error ? (
         <div className="mt-8 rounded-2xl border border-border p-12 text-center text-muted">
           <Mail size={40} className="mx-auto mb-4 opacity-50" />
           No messages yet. Contact form submissions will appear here.

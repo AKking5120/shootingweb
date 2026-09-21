@@ -28,7 +28,7 @@ create table if not exists public.messages (
   service text not null,
   budget text not null default '',
   message text not null,
-  read boolean not null default false,
+  is_read boolean not null default false,
   created_at timestamptz not null default now()
 );
 
@@ -61,7 +61,7 @@ create table if not exists public.media_files (
 -- Indexes
 create index if not exists blogs_date_idx on public.blogs (date desc);
 create index if not exists messages_created_at_idx on public.messages (created_at desc);
-create index if not exists messages_read_idx on public.messages (read);
+create index if not exists messages_read_idx on public.messages (is_read);
 create index if not exists media_files_category_idx on public.media_files (category);
 create index if not exists media_files_path_idx on public.media_files (path);
 
