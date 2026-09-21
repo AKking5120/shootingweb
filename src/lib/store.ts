@@ -166,6 +166,12 @@ export async function addMessage(
   const store = await getStore();
   if (store) return store.addMessage(data);
 
+  if (process.env.VERCEL) {
+    throw new Error(
+      "Supabase is not configured on Vercel. Add NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY."
+    );
+  }
+
   const messages = await getMessages();
   const message: ContactMessage = {
     ...data,

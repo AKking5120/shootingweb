@@ -13,6 +13,7 @@ interface ButtonProps {
   className?: string;
   onClick?: () => void;
   type?: "button" | "submit";
+  disabled?: boolean;
 }
 
 const variants: Record<ButtonVariant, string> = {
@@ -32,10 +33,12 @@ export function Button({
   className,
   onClick,
   type = "button",
+  disabled = false,
 }: ButtonProps) {
   const classes = cn(
     "inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-all duration-300",
     variants[variant],
+    disabled && "pointer-events-none opacity-50",
     className
   );
 
@@ -53,9 +56,10 @@ export function Button({
     <motion.button
       type={type}
       onClick={onClick}
+      disabled={disabled}
       className={classes}
-      whileHover={{ y: -2 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={disabled ? undefined : { y: -2 }}
+      whileTap={disabled ? undefined : { scale: 0.98 }}
     >
       {children}
     </motion.button>

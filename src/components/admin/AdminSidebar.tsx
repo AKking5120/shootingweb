@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -7,9 +8,11 @@ import {
   FileText,
   Mail,
   Settings,
-  ImageIcon,
+  Image as ImageIcon,
   ExternalLink,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -23,15 +26,31 @@ const links = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     window.location.href = "/admin/login";
   };
 
-  return (
-    <aside className="flex w-64 flex-col border-r border-border bg-surface p-6">
-      <div className="mb-10">
+  const navContent = (
+    <>
+      <div className="mb-8 lg:mb-10">
         <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-brand text-sm font-extrabold">
           SY
         </span>
@@ -49,6 +68,7 @@ export function AdminSidebar() {
             <Link
               key={link.href}
               href={link.href}
+              onClick={() => setMobileOpen(false)}
               className={cn(
                 "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors",
                 active
@@ -81,6 +101,53 @@ export function AdminSidebar() {
           Logout
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-border bg-surface px-4 py-3 lg:hidden">
+        <div>
+          <p className="text-sm font-bold text-white">Admin Panel</p>
+          <p className="text-xs text-muted">SY Media & Marketing</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setMobileOpen(true)}
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-white"
+          aria-label="Open admin menu"
+        >
+          <Menu size={20} />
+        </button>
+      </div>
+
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/70"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close admin menu"
+          />
+          <aside className="absolute left-0 top-0 flex h-full w-[min(100%,20rem)] flex-col bg-surface p-6 shadow-2xl">
+            <div className="mb-4 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-white"
+                aria-label="Close menu"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            {navContent}
+          </aside>
+        </div>
+      )}
+
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-surface p-6 lg:flex">
+        {navContent}
+      </aside>
+    </>
   );
 }

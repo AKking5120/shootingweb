@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FileText, Mail, Star, Inbox } from "lucide-react";
+import { FileText, Mail, Star, Inbox, Image as ImageIcon } from "lucide-react";
 import { getDashboardStats } from "@/lib/store";
 
 export default async function AdminDashboardPage() {
@@ -69,6 +69,15 @@ export default async function AdminDashboardPage() {
               className="rounded-full bg-gradient-brand px-5 py-2.5 text-sm font-semibold"
             >
               + New Blog Post
+            </Link>
+            <Link
+              href="/admin/media"
+              className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold hover:border-accent-blue"
+            >
+              <span className="inline-flex items-center gap-2">
+                <ImageIcon size={16} />
+                Manage Media
+              </span>
             </Link>
             <Link
               href="/admin/messages"

@@ -25,6 +25,8 @@ interface ContactProps {
 
 export function Contact({ defaultService, compact = false }: ContactProps) {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const initialService =
     defaultService && contactFormServices.includes(defaultService)
       ? defaultService
@@ -32,26 +34,45 @@ export function Contact({ defaultService, compact = false }: ContactProps) {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSubmitted(false);
+
     const form = e.currentTarget;
     const data = new FormData(form);
 
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: data.get("name"),
-        company: data.get("company"),
-        email: data.get("email"),
-        phone: data.get("phone"),
-        service: data.get("service"),
-        budget: data.get("budget"),
-        message: data.get("message"),
-      }),
-    });
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.get("name"),
+          company: data.get("company"),
+          email: data.get("email"),
+          phone: data.get("phone"),
+          service: data.get("service"),
+          budget: data.get("budget"),
+          message: data.get("message"),
+        }),
+      });
 
-    if (res.ok) {
+      const result = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setError(
+          typeof result.error === "string"
+            ? result.error
+            : "Message could not be sent. Please try again."
+        );
+        return;
+      }
+
       setSubmitted(true);
       form.reset();
+    } catch {
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -195,9 +216,12 @@ export function Contact({ defaultService, compact = false }: ContactProps) {
                   : undefined
               }
             />
-            <Button type="submit" className="w-full">
-              Send Enquiry →
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Sending..." : "Send Enquiry →"}
             </Button>
+            {error && (
+              <p className="text-center text-sm text-red-400">{error}</p>
+            )}
             {submitted && (
               <p className="text-center text-sm text-green-400">
                 Thank you! Your enquiry has been sent. We&apos;ll get back to you within 24 hours.
