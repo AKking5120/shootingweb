@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { addMessage } from "@/lib/store";
 import { isSupabaseEnabled } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   try {
     if (process.env.VERCEL && !isSupabaseEnabled()) {
