@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk, Caveat } from "next/font/google";
 import { siteConfig } from "@/data/site";
 import { AdsTracking } from "@/components/AdsTracking";
+import { ConsultationPopup } from "@/components/ConsultationPopup";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { getSiteContent } from "@/lib/site-content";
 import "./globals.css";
 
 const inter = Inter({
@@ -61,11 +63,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const siteContent = await getSiteContent();
+
   return (
     <html
       lang="en"
@@ -74,6 +78,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-background font-sans text-white antialiased">
         <AdsTracking />
         {children}
+        <ConsultationPopup popup={siteContent.popup} />
         <WhatsAppButton />
       </body>
     </html>

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { Plus, Pencil } from "lucide-react";
 import { getBlogs } from "@/lib/store";
+import { getBlogStatusLabel } from "@/lib/blog-utils";
 import { DeleteBlogButton } from "@/components/admin/DeleteBlogButton";
 
 export default async function AdminBlogsPage() {
-  const blogs = await getBlogs();
+  const blogs = await getBlogs({ all: true });
 
   return (
     <div>
@@ -29,6 +30,7 @@ export default async function AdminBlogsPage() {
               <th className="px-6 py-4 font-semibold text-muted">Title</th>
               <th className="px-6 py-4 font-semibold text-muted">Category</th>
               <th className="px-6 py-4 font-semibold text-muted">Date</th>
+              <th className="px-6 py-4 font-semibold text-muted">Status</th>
               <th className="px-6 py-4 font-semibold text-muted">Actions</th>
             </tr>
           </thead>
@@ -43,6 +45,19 @@ export default async function AdminBlogsPage() {
                 </td>
                 <td className="px-6 py-4 text-muted">{blog.category}</td>
                 <td className="px-6 py-4 text-muted">{blog.date}</td>
+                <td className="px-6 py-4">
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                      (blog.status ?? "published") === "published"
+                        ? "bg-green-500/10 text-green-400"
+                        : (blog.status ?? "published") === "scheduled"
+                          ? "bg-yellow-500/10 text-yellow-400"
+                          : "bg-white/10 text-muted"
+                    }`}
+                  >
+                    {getBlogStatusLabel(blog)}
+                  </span>
+                </td>
                 <td className="px-6 py-4">
                   <div className="flex gap-2">
                     <Link

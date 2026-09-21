@@ -13,7 +13,7 @@ export async function GET() {
   if (!(await requireAuth())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const blogs = await getBlogs();
+  const blogs = await getBlogs({ all: true });
   return NextResponse.json(blogs);
 }
 
@@ -39,6 +39,7 @@ export async function POST(request: Request) {
     readTime: body.readTime || "5 min read",
     image: body.image,
     featured: Boolean(body.featured),
+    status: body.status || "published",
     tags: Array.isArray(body.tags)
       ? body.tags
       : String(body.tags || "")

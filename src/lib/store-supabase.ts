@@ -22,6 +22,7 @@ interface BlogRow {
   read_time: string;
   image: string;
   featured: boolean;
+  status?: string;
   tags: string[];
   content: BlogBlock[];
 }
@@ -51,6 +52,7 @@ interface SettingsRow {
   linkedin: string;
   youtube: string;
   media?: SiteSettings["media"];
+  content?: SiteSettings["content"];
 }
 
 interface MediaFileRow {
@@ -85,6 +87,7 @@ function rowToBlog(row: BlogRow): BlogPost {
     readTime: row.read_time,
     image: row.image,
     featured: row.featured,
+    status: (row.status as BlogPost["status"]) ?? "published",
     tags: row.tags ?? [],
     content: row.content ?? [],
   };
@@ -101,6 +104,7 @@ function blogToRow(post: BlogPost) {
     read_time: post.readTime,
     image: post.image,
     featured: Boolean(post.featured),
+    status: post.status ?? "published",
     tags: post.tags,
     content: post.content,
   };
@@ -133,6 +137,7 @@ function rowToSettings(row: SettingsRow): SiteSettings {
     linkedin: row.linkedin,
     youtube: row.youtube,
     media: row.media,
+    content: row.content,
   };
 }
 
@@ -149,6 +154,7 @@ function settingsToRow(settings: SiteSettings) {
     linkedin: settings.linkedin,
     youtube: settings.youtube,
     media: settings.media ?? {},
+    content: settings.content ?? {},
   };
 }
 
@@ -222,9 +228,19 @@ export async function getBlogBySlug(slug: string) {
 
 export async function saveBlog(post: BlogPost) {
   const supabase = getSupabase();
-  const { error } = await supabase.from("blogs").upsert(blogToRow(post), {
+  let { error } = await supabase.from("blogs").upsert(blogToRow(post), {
     onConflict: "slug",
   });
+
+  if (error && error.message.toLowerCase().includes("status")) {
+    const row = blogToRow(post);
+    const { status, ...rowWithoutStatus } = row;
+    void status;
+    const retry = await supabase.from("blogs").upsert(rowWithoutStatus, {
+      onConflict: "slug",
+    });
+    error = retry.error;
+  }
 
   if (error) throw error;
   return post;
@@ -342,7 +358,10 @@ export async function saveSettings(settings: SiteSettings) {
 }
 
 export async function getDashboardStats() {
-  const [blogs, messages] = await Promise.all([getBlogs(), getMessages()]);
+  const [blogs, messages] = await Promise.all([
+    getBlogs(),
+    getMessages(),
+  ]);
   return {
     totalBlogs: blogs.length,
     featuredBlogs: blogs.filter((b) => b.featured).length,

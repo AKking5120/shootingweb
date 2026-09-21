@@ -8,7 +8,7 @@ export default async function EditBlogPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getBlogBySlug(slug);
+  const post = await getBlogBySlug(slug, { all: true });
   if (!post) notFound();
 
   return (

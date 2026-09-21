@@ -10,11 +10,16 @@ import { CTA } from "@/components/sections/CTA";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { BlogPreview } from "@/components/sections/BlogPreview";
 import { Contact } from "@/components/sections/Contact";
+import { FAQ } from "@/components/sections/FAQ";
 import { Footer } from "@/components/sections/Footer";
 import { getSiteMedia } from "@/lib/site-media";
+import { getSiteContent } from "@/lib/site-content";
 
 export default async function Home() {
-  const media = await getSiteMedia();
+  const [media, siteContent] = await Promise.all([
+    getSiteMedia(),
+    getSiteContent(),
+  ]);
 
   return (
     <>
@@ -28,10 +33,15 @@ export default async function Home() {
         <Services />
         <About image={media.aboutImage} />
         <Portfolio items={media.portfolio} />
-        <Process />
+        <Process
+          steps={siteContent.processSteps}
+          title={siteContent.processTitle}
+          eyebrow={siteContent.processEyebrow}
+        />
         <Results />
         <CTA background={media.ctaBackground} />
         <Testimonials />
+        <FAQ items={siteContent.faq} />
         <BlogPreview />
         <Contact />
       </main>

@@ -4,6 +4,7 @@ import path from "path";
 import { blogPosts as seedBlogs } from "@/data/blogs";
 import { siteConfig, socialLinks } from "@/data/site";
 import { isSupabaseEnabled } from "@/lib/supabase";
+import { isBlogPubliclyVisible } from "@/lib/blog-utils";
 import { normalizeImagePath } from "@/lib/image-utils";
 import type {
   BlogPost,
@@ -114,17 +115,25 @@ async function getBlogsFromFile(): Promise<BlogPost[]> {
   );
 }
 
-export async function getBlogs(): Promise<BlogPost[]> {
+export async function getBlogs(options?: { all?: boolean }): Promise<BlogPost[]> {
   const store = await getStore();
-  if (store) return store.getBlogs();
-  return getBlogsFromFile();
+  const blogs = store ? await store.getBlogs() : await getBlogsFromFile();
+  if (options?.all) return blogs;
+  return blogs.filter((post) => isBlogPubliclyVisible(post));
 }
 
-export async function getBlogBySlug(slug: string) {
+export async function getBlogBySlug(
+  slug: string,
+  options?: { all?: boolean }
+) {
   const store = await getStore();
-  if (store) return store.getBlogBySlug(slug);
-  const blogs = await getBlogsFromFile();
-  return blogs.find((b) => b.slug === slug);
+  const blog = store
+    ? await store.getBlogBySlug(slug)
+    : (await getBlogsFromFile()).find((b) => b.slug === slug);
+
+  if (!blog) return undefined;
+  if (options?.all || isBlogPubliclyVisible(blog)) return blog;
+  return undefined;
 }
 
 export async function saveBlog(post: BlogPost) {
@@ -225,7 +234,10 @@ export async function getDashboardStats() {
   const store = await getStore();
   if (store) return store.getDashboardStats();
 
-  const [blogs, messages] = await Promise.all([getBlogs(), getMessages()]);
+  const [blogs, messages] = await Promise.all([
+    getBlogs({ all: true }),
+    getMessages(),
+  ]);
   return {
     totalBlogs: blogs.length,
     featuredBlogs: blogs.filter((b) => b.featured).length,

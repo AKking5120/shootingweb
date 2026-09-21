@@ -9,6 +9,7 @@ import {
   Mail,
   Settings,
   Image as ImageIcon,
+  Layers,
   ExternalLink,
   LogOut,
   Menu,
@@ -20,6 +21,7 @@ const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/blogs", label: "Blogs", icon: FileText },
   { href: "/admin/media", label: "Media", icon: ImageIcon },
+  { href: "/admin/content", label: "Content", icon: Layers },
   { href: "/admin/messages", label: "Messages", icon: Mail },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];

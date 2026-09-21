@@ -33,6 +33,7 @@ export function BlogForm({ post }: BlogFormProps) {
     readTime: post?.readTime || "5 min read",
     image: post?.image || "",
     featured: post?.featured || false,
+    status: post?.status || "published",
     tags: post?.tags.join(", ") || "",
     contentText: post ? contentToText(post.content) : "",
   });
@@ -108,13 +109,30 @@ export function BlogForm({ post }: BlogFormProps) {
           />
         </div>
         <div>
-          <label className="mb-2 block text-sm text-muted">Date</label>
+          <label className="mb-2 block text-sm text-muted">Publish Date</label>
           <input
             type="date"
             className={inputClass}
             value={form.date}
             onChange={(e) => setForm({ ...form, date: e.target.value })}
           />
+        </div>
+        <div>
+          <label className="mb-2 block text-sm text-muted">Status</label>
+          <select
+            className={inputClass}
+            value={form.status}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                status: e.target.value as "draft" | "published" | "scheduled",
+              })
+            }
+          >
+            <option value="published">Published (live now)</option>
+            <option value="scheduled">Scheduled (live on publish date)</option>
+            <option value="draft">Draft (hidden)</option>
+          </select>
         </div>
         <div>
           <label className="mb-2 block text-sm text-muted">Read Time</label>

@@ -71,6 +71,12 @@ export default async function AdminDashboardPage() {
               + New Blog Post
             </Link>
             <Link
+              href="/admin/content"
+              className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold hover:border-accent-blue"
+            >
+              Edit FAQ & Popup
+            </Link>
+            <Link
               href="/admin/media"
               className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold hover:border-accent-blue"
             >

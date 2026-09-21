@@ -22,7 +22,7 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { slug } = await params;
-  const post = await getBlogBySlug(slug);
+  const post = await getBlogBySlug(slug, { all: true });
   if (!post) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(post);
 }
@@ -36,7 +36,7 @@ export async function PUT(
   }
 
   const { slug } = await params;
-  const existing = await getBlogBySlug(slug);
+  const existing = await getBlogBySlug(slug, { all: true });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const body = await request.json();
@@ -55,6 +55,7 @@ export async function PUT(
     readTime: body.readTime ?? existing.readTime,
     image: body.image ?? existing.image,
     featured: body.featured ?? existing.featured,
+    status: body.status ?? existing.status ?? "published",
     tags: body.tags
       ? Array.isArray(body.tags)
         ? body.tags

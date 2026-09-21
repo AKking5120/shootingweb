@@ -3,6 +3,8 @@ export interface BlogBlock {
   content: string | string[];
 }
 
+export type BlogStatus = "draft" | "published" | "scheduled";
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -13,8 +15,37 @@ export interface BlogPost {
   readTime: string;
   image: string;
   featured?: boolean;
+  status?: BlogStatus;
   tags: string[];
   content: BlogBlock[];
+}
+
+export interface FaqItem {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export interface ProcessStep {
+  number: string;
+  title: string;
+  description: string;
+}
+
+export interface PopupOffer {
+  enabled: boolean;
+  title: string;
+  message: string;
+  ctaText: string;
+  ctaHref: string;
+}
+
+export interface SiteContent {
+  faq: FaqItem[];
+  processSteps: ProcessStep[];
+  processTitle: string;
+  processEyebrow: string;
+  popup: PopupOffer;
 }
 
 export interface ContactMessage {
@@ -41,6 +72,7 @@ export interface SiteSettings {
   linkedin: string;
   youtube: string;
   media?: SiteMedia;
+  content?: SiteContent;
 }
 
 export interface HeroCollageItem {

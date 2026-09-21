@@ -12,6 +12,7 @@ create table if not exists public.blogs (
   read_time text not null default '5 min read',
   image text not null,
   featured boolean not null default false,
+  status text not null default 'published',
   tags jsonb not null default '[]'::jsonb,
   content jsonb not null default '[]'::jsonb,
   created_at timestamptz not null default now(),
@@ -45,6 +46,7 @@ create table if not exists public.site_settings (
   linkedin text not null default '',
   youtube text not null default '',
   media jsonb not null default '{}'::jsonb,
+  content jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
 );
 

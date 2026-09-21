@@ -2,15 +2,26 @@
 
 import { motion } from "framer-motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { processSteps } from "@/data/site";
+import { processSteps as defaultSteps } from "@/data/site";
+import type { ProcessStep } from "@/types";
 
-export function Process() {
+interface ProcessProps {
+  steps?: ProcessStep[];
+  title?: string;
+  eyebrow?: string;
+}
+
+export function Process({
+  steps = defaultSteps,
+  title = "Simple Steps. Big Results.",
+  eyebrow = "Our Process",
+}: ProcessProps) {
   return (
     <section id="process" className="py-24 md:py-32">
       <div className="mx-auto max-w-content px-6 lg:px-8">
         <SectionHeading
-          eyebrow="Our Process"
-          title="Simple Steps. Big Results."
+          eyebrow={eyebrow}
+          title={title}
           align="center"
         />
 
@@ -18,7 +29,7 @@ export function Process() {
           <div className="absolute left-0 right-0 top-[22px] hidden h-px bg-border lg:block" />
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-4">
-            {processSteps.map((step, i) => (
+            {steps.map((step, i) => (
               <motion.div
                 key={step.number}
                 initial={{ opacity: 0, y: 30 }}
