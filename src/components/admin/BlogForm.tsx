@@ -4,6 +4,7 @@ import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { BlogPost } from "@/types";
 import { contentToText } from "@/lib/blog-utils";
+import { ImagePicker } from "@/components/admin/ImagePicker";
 
 const categories = [
   "Digital Marketing",
@@ -124,12 +125,11 @@ export function BlogForm({ post }: BlogFormProps) {
           />
         </div>
         <div className="sm:col-span-2">
-          <label className="mb-2 block text-sm text-muted">Image URL *</label>
-          <input
-            className={inputClass}
+          <ImagePicker
+            label="Cover Image"
+            category="blogs"
             value={form.image}
-            onChange={(e) => setForm({ ...form, image: e.target.value })}
-            placeholder="https://images.unsplash.com/..."
+            onChange={(path) => setForm({ ...form, image: path })}
             required
           />
         </div>

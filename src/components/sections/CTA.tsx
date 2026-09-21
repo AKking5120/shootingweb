@@ -4,8 +4,14 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { ctaBackground } from "@/data/site";
+import { resolveImageSrc } from "@/lib/image-utils";
 
-export function CTA() {
+interface CTAProps {
+  background?: string;
+}
+
+export function CTA({ background = ctaBackground }: CTAProps) {
+  const backgroundSrc = resolveImageSrc(background);
   return (
     <section className="py-24 md:py-32">
       <div className="mx-auto max-w-content px-6 lg:px-8">
@@ -34,11 +40,12 @@ export function CTA() {
 
             <div className="relative min-h-[280px] lg:min-h-full">
               <Image
-                src={ctaBackground}
+                src={backgroundSrc}
                 alt="Cinematic mountain landscape"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
+                unoptimized={backgroundSrc.startsWith("http")}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent lg:from-background lg:via-transparent" />
               <div className="absolute inset-0 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20" />

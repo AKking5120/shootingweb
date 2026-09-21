@@ -7,6 +7,7 @@ import {
   FileText,
   Mail,
   Settings,
+  ImageIcon,
   ExternalLink,
   LogOut,
 } from "lucide-react";
@@ -15,6 +16,7 @@ import { cn } from "@/lib/utils";
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/blogs", label: "Blogs", icon: FileText },
+  { href: "/admin/media", label: "Media", icon: ImageIcon },
   { href: "/admin/messages", label: "Messages", icon: Mail },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Clock } from "lucide-react";
 import type { BlogPost } from "@/types";
 import { formatDate } from "@/lib/blog-utils";
+import { resolveImageSrc } from "@/lib/image-utils";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -14,6 +15,8 @@ interface BlogCardProps {
 }
 
 export function BlogCard({ post, index = 0, featured = false }: BlogCardProps) {
+  const imageSrc = resolveImageSrc(post.image);
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 24 }}
@@ -33,11 +36,12 @@ export function BlogCard({ post, index = 0, featured = false }: BlogCardProps) {
           }`}
         >
           <Image
-            src={post.image}
+            src={imageSrc}
             alt={post.title}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-105"
             sizes={featured ? "(max-width: 1024px) 100vw, 50vw" : "(max-width: 768px) 100vw, 33vw"}
+            unoptimized={imageSrc.startsWith("http")}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
         </div>

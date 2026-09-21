@@ -6,8 +6,14 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { portfolio } from "@/data/site";
+import { resolveImageSrc } from "@/lib/image-utils";
+import type { PortfolioItem } from "@/types";
 
-export function Portfolio() {
+interface PortfolioProps {
+  items?: PortfolioItem[];
+}
+
+export function Portfolio({ items = portfolio }: PortfolioProps) {
   return (
     <section id="work" className="py-24 md:py-32">
       <div className="mx-auto max-w-content px-6 lg:px-8">
@@ -28,7 +34,9 @@ export function Portfolio() {
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {portfolio.map((project, i) => (
+          {items.map((project, i) => {
+            const imageSrc = resolveImageSrc(project.image);
+            return (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 30 }}
@@ -43,11 +51,12 @@ export function Portfolio() {
                 className="group relative block aspect-[3/4] overflow-hidden rounded-2xl border border-border"
               >
                 <Image
-                  src={project.image}
+                  src={imageSrc}
                   alt={project.title}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                   sizes="(max-width: 768px) 100vw, 25vw"
+                  unoptimized={imageSrc.startsWith("http")}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-100" />
 
@@ -66,7 +75,8 @@ export function Portfolio() {
                 </span>
               </Link>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

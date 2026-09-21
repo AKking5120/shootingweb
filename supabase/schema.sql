@@ -44,18 +44,32 @@ create table if not exists public.site_settings (
   instagram text not null default '',
   linkedin text not null default '',
   youtube text not null default '',
+  media jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
+);
+
+-- Image library (paths to files in public/images on GitHub)
+create table if not exists public.media_files (
+  id text primary key,
+  category text not null,
+  path text not null unique,
+  label text not null default '',
+  alt text not null default '',
+  created_at timestamptz not null default now()
 );
 
 -- Indexes
 create index if not exists blogs_date_idx on public.blogs (date desc);
 create index if not exists messages_created_at_idx on public.messages (created_at desc);
 create index if not exists messages_read_idx on public.messages (read);
+create index if not exists media_files_category_idx on public.media_files (category);
+create index if not exists media_files_path_idx on public.media_files (path);
 
 -- Row Level Security (API uses service role key server-side)
 alter table public.blogs enable row level security;
 alter table public.messages enable row level security;
 alter table public.site_settings enable row level security;
+alter table public.media_files enable row level security;
 
 -- Updated_at trigger
 create or replace function public.set_updated_at()

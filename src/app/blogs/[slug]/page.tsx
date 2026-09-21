@@ -14,6 +14,7 @@ import {
   getRelatedPosts,
 } from "@/lib/blogs";
 import { formatDate } from "@/lib/blog-utils";
+import { resolveImageSrc } from "@/lib/image-utils";
 import { siteConfig } from "@/data/site";
 
 interface BlogPostPageProps {
@@ -40,7 +41,7 @@ export async function generateMetadata({
       description: post.excerpt,
       type: "article",
       publishedTime: post.date,
-      images: [{ url: post.image }],
+      images: [{ url: resolveImageSrc(post.image) }],
       url: `${siteConfig.url}/blogs/${post.slug}`,
     },
   };
@@ -52,6 +53,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   if (!post) notFound();
 
   const related = await getRelatedPosts(slug);
+  const imageSrc = resolveImageSrc(post.image);
 
   return (
     <>
@@ -95,12 +97,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="relative mx-auto mt-10 max-w-content px-6 lg:px-8">
               <div className="relative aspect-[21/9] overflow-hidden rounded-2xl border border-border">
                 <Image
-                  src={post.image}
+                  src={imageSrc}
                   alt={post.title}
                   fill
                   priority
                   className="object-cover"
                   sizes="(max-width: 1320px) 100vw, 1320px"
+                  unoptimized={imageSrc.startsWith("http")}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
               </div>

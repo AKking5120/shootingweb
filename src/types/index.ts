@@ -40,4 +40,36 @@ export interface SiteSettings {
   instagram: string;
   linkedin: string;
   youtube: string;
+  media?: SiteMedia;
+}
+
+export interface HeroCollageItem {
+  src: string;
+  alt: string;
+  label: string;
+}
+
+export interface PortfolioItem {
+  id: string;
+  title: string;
+  category: string;
+  image: string;
+  href: string;
+}
+
+export interface SiteMedia {
+  heroBackground: string;
+  heroCollage: HeroCollageItem[];
+  aboutImage: string;
+  ctaBackground: string;
+  portfolio: PortfolioItem[];
+}
+
+export interface MediaFile {
+  id: string;
+  category: string;
+  path: string;
+  label: string;
+  alt: string;
+  createdAt: string;
 }

@@ -26,7 +26,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
     setLoading(false);
   };
 
-  const fields: { key: keyof SiteSettings; label: string }[] = [
+  const fields: { key: Exclude<keyof SiteSettings, "media">; label: string }[] = [
     { key: "name", label: "Company Name" },
     { key: "email", label: "Email" },
     { key: "phone", label: "Phone" },

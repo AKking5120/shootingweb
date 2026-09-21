@@ -5,8 +5,14 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { aboutImage, stats } from "@/data/site";
+import { resolveImageSrc } from "@/lib/image-utils";
 
-export function About() {
+interface AboutProps {
+  image?: string;
+}
+
+export function About({ image = aboutImage }: AboutProps) {
+  const imageSrc = resolveImageSrc(image);
   return (
     <section id="about" className="py-24 md:py-32">
       <div className="mx-auto max-w-content px-6 lg:px-8">
@@ -20,11 +26,12 @@ export function About() {
           >
             <div className="relative overflow-hidden rounded-2xl border border-border">
               <Image
-                src={aboutImage}
+                src={imageSrc}
                 alt="Creative workspace with laptop and camera equipment"
                 width={600}
                 height={480}
                 className="h-[400px] w-full object-cover md:h-[480px]"
+                unoptimized={imageSrc.startsWith("http")}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
             </div>

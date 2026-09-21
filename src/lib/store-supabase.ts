@@ -2,7 +2,14 @@ import "server-only";
 import { blogPosts as seedBlogs } from "@/data/blogs";
 import { siteConfig, socialLinks } from "@/data/site";
 import { getSupabase } from "@/lib/supabase";
-import type { BlogBlock, BlogPost, ContactMessage, SiteSettings } from "@/types";
+import { normalizeImagePath } from "@/lib/image-utils";
+import type {
+  BlogBlock,
+  BlogPost,
+  ContactMessage,
+  MediaFile,
+  SiteSettings,
+} from "@/types";
 
 interface BlogRow {
   slug: string;
@@ -41,6 +48,16 @@ interface SettingsRow {
   instagram: string;
   linkedin: string;
   youtube: string;
+  media?: SiteSettings["media"];
+}
+
+interface MediaFileRow {
+  id: string;
+  category: string;
+  path: string;
+  label: string;
+  alt: string;
+  created_at: string;
 }
 
 const defaultSettings: SiteSettings = {
@@ -113,13 +130,34 @@ function rowToSettings(row: SettingsRow): SiteSettings {
     instagram: row.instagram,
     linkedin: row.linkedin,
     youtube: row.youtube,
+    media: row.media,
   };
 }
 
 function settingsToRow(settings: SiteSettings) {
   return {
     id: "default",
-    ...settings,
+    name: settings.name,
+    email: settings.email,
+    phone: settings.phone,
+    tagline: settings.tagline,
+    positioning: settings.positioning,
+    description: settings.description,
+    instagram: settings.instagram,
+    linkedin: settings.linkedin,
+    youtube: settings.youtube,
+    media: settings.media ?? {},
+  };
+}
+
+function rowToMediaFile(row: MediaFileRow): MediaFile {
+  return {
+    id: row.id,
+    category: row.category,
+    path: row.path,
+    label: row.label,
+    alt: row.alt,
+    createdAt: row.created_at,
   };
 }
 
@@ -283,4 +321,48 @@ export async function getDashboardStats() {
     totalMessages: messages.length,
     unreadMessages: messages.filter((m) => !m.read).length,
   };
+}
+
+export async function getMediaFiles(): Promise<MediaFile[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from("media_files")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data as MediaFileRow[]).map(rowToMediaFile);
+}
+
+export async function addMediaFile(
+  data: Omit<MediaFile, "id" | "createdAt">
+) {
+  const supabase = getSupabase();
+  const path = normalizeImagePath(data.path, data.category);
+  const file: Omit<MediaFileRow, "created_at"> = {
+    id: `media_${Date.now()}`,
+    category: data.category,
+    path,
+    label: data.label,
+    alt: data.alt,
+  };
+
+  const { error } = await supabase.from("media_files").insert(file);
+  if (error) throw error;
+
+  return rowToMediaFile({
+    ...file,
+    created_at: new Date().toISOString(),
+  });
+}
+
+export async function deleteMediaFile(id: string) {
+  const supabase = getSupabase();
+  const { error } = await supabase.from("media_files").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function saveSiteMedia(media: SiteSettings["media"]) {
+  const settings = await getSettings();
+  return saveSettings({ ...settings, media });
 }

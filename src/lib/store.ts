@@ -4,7 +4,14 @@ import path from "path";
 import { blogPosts as seedBlogs } from "@/data/blogs";
 import { siteConfig, socialLinks } from "@/data/site";
 import { isSupabaseEnabled } from "@/lib/supabase";
-import type { BlogPost, ContactMessage, SiteSettings, BlogBlock } from "@/types";
+import { normalizeImagePath } from "@/lib/image-utils";
+import type {
+  BlogPost,
+  ContactMessage,
+  MediaFile,
+  SiteSettings,
+  BlogBlock,
+} from "@/types";
 
 const DATA_DIR = path.join(process.cwd(), "data", "content");
 
@@ -219,4 +226,50 @@ export async function getDashboardStats() {
     totalMessages: messages.length,
     unreadMessages: messages.filter((m) => !m.read).length,
   };
+}
+
+export async function getMediaFiles(): Promise<MediaFile[]> {
+  const store = await getStore();
+  if (store) return store.getMediaFiles();
+  return readJson<MediaFile[]>("media-files.json", []);
+}
+
+export async function addMediaFile(
+  data: Omit<MediaFile, "id" | "createdAt">
+) {
+  const store = await getStore();
+  if (store) return store.addMediaFile(data);
+
+  const files = await getMediaFiles();
+  const path = normalizeImagePath(data.path, data.category);
+  const file: MediaFile = {
+    id: `media_${Date.now()}`,
+    category: data.category,
+    path,
+    label: data.label,
+    alt: data.alt,
+    createdAt: new Date().toISOString(),
+  };
+  files.unshift(file);
+  await writeJson("media-files.json", files);
+  return file;
+}
+
+export async function deleteMediaFile(id: string) {
+  const store = await getStore();
+  if (store) return store.deleteMediaFile(id);
+
+  const files = await getMediaFiles();
+  await writeJson(
+    "media-files.json",
+    files.filter((file) => file.id !== id)
+  );
+}
+
+export async function saveSiteMedia(media: SiteSettings["media"]) {
+  const store = await getStore();
+  if (store) return store.saveSiteMedia(media);
+
+  const settings = await getSettings();
+  return saveSettings({ ...settings, media });
 }

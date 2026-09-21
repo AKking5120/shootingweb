@@ -11,20 +11,26 @@ import { Testimonials } from "@/components/sections/Testimonials";
 import { BlogPreview } from "@/components/sections/BlogPreview";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
+import { getSiteMedia } from "@/lib/site-media";
 
-export default function Home() {
+export default async function Home() {
+  const media = await getSiteMedia();
+
   return (
     <>
       <Navbar />
       <main>
-        <Hero />
+        <Hero
+          heroBackground={media.heroBackground}
+          heroCollage={media.heroCollage}
+        />
         <ServicesMarquee />
         <Services />
-        <About />
-        <Portfolio />
+        <About image={media.aboutImage} />
+        <Portfolio items={media.portfolio} />
         <Process />
         <Results />
-        <CTA />
+        <CTA background={media.ctaBackground} />
         <Testimonials />
         <BlogPreview />
         <Contact />

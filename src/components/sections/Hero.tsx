@@ -4,6 +4,13 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { heroImages, siteConfig } from "@/data/site";
+import { resolveImageSrc } from "@/lib/image-utils";
+import type { HeroCollageItem } from "@/types";
+
+interface HeroProps {
+  heroBackground?: string;
+  heroCollage?: HeroCollageItem[];
+}
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -14,7 +21,12 @@ const fadeUp = {
   }),
 };
 
-export function Hero() {
+export function Hero({
+  heroBackground = heroImages.background,
+  heroCollage = heroImages.collage,
+}: HeroProps) {
+  const backgroundSrc = resolveImageSrc(heroBackground);
+
   return (
     <section
       id="home"
@@ -22,12 +34,13 @@ export function Hero() {
     >
       <div className="absolute inset-0">
         <Image
-          src={heroImages.background}
+          src={backgroundSrc}
           alt="Cinematic videographer filming city skyline"
           fill
           priority
           className="object-cover"
           sizes="100vw"
+          unoptimized={backgroundSrc.startsWith("http")}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/50" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
@@ -96,7 +109,8 @@ export function Hero() {
         </div>
 
         <div className="relative hidden h-[480px] lg:block">
-          {heroImages.collage.map((item, i) => {
+          {heroCollage.map((item, i) => {
+            const collageSrc = resolveImageSrc(item.src);
             const positions = [
               "left-0 top-0 w-[220px]",
               "right-0 top-12 w-[200px]",
@@ -115,11 +129,12 @@ export function Hero() {
               >
                 <div className="relative h-28 overflow-hidden">
                   <Image
-                    src={item.src}
+                    src={collageSrc}
                     alt={item.alt}
                     fill
                     className="object-cover"
                     sizes="240px"
+                    unoptimized={collageSrc.startsWith("http")}
                   />
                 </div>
                 <p className="px-4 py-3 text-xs font-semibold text-muted">
