@@ -1,7 +1,7 @@
 [
   {
-    "slug": "how-to-grow-your-brand-on-social-media",
-    "title": "How to Grow Your Brand on Social Media in 2026",
+    "slug": "how-to-grow-your-brand",
+    "title": "How to Grow Your Brand",
     "excerpt": "A practical guide to building visibility, engagement, and trust on Instagram, Facebook, and beyond — without wasting budget on random posts.",
     "category": "Social Media",
     "author": "SY Media Team",
@@ -47,6 +47,92 @@
       {
         "type": "paragraph",
         "content": "The brands that win on social media treat it as a growth channel, not a bulletin board. With the right mix of strategy, creative, and consistency, your audience becomes an asset that compounds over time."
+      }
+    ]
+  },
+  {
+    "slug": "how-to-become-a-content-creator",
+    "title": "How to Become a Content Creator",
+    "excerpt": "Want to build a personal brand or start creating for clients? Here is a practical roadmap from zero to your first consistent content system.",
+    "category": "Content Strategy",
+    "author": "SY Media Team",
+    "date": "2026-03-15",
+    "readTime": "7 min read",
+    "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&q=80",
+    "featured": true,
+    "tags": ["content creator", "personal brand", "social media"],
+    "content": [
+      {
+        "type": "paragraph",
+        "content": "Content creation is one of the fastest ways to build visibility, trust, and income online. But most beginners struggle because they post without a niche, a format, or a repeatable workflow."
+      },
+      {
+        "type": "heading",
+        "content": "Pick a niche you can stay consistent in"
+      },
+      {
+        "type": "paragraph",
+        "content": "Choose a topic where you can teach, entertain, or inspire repeatedly — marketing tips, fitness, finance, fashion, or local business growth. Consistency beats perfection when you are starting out."
+      },
+      {
+        "type": "heading",
+        "content": "Build a simple content system"
+      },
+      {
+        "type": "list",
+        "content": [
+          "Plan 3–5 content pillars for your feed",
+          "Batch-write hooks and captions for the week",
+          "Film short-form videos in one session",
+          "Review analytics and double down on what performs"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": "Great creators are not lucky — they are systematic. Start small, publish often, and refine your voice as you grow."
+      }
+    ]
+  },
+  {
+    "slug": "how-to-start-affiliate-marketing",
+    "title": "How to Start Affiliate Marketing",
+    "excerpt": "Learn how to choose the right products, build trust with your audience, and earn commissions without spammy promotions.",
+    "category": "Digital Marketing",
+    "author": "SY Media Team",
+    "date": "2026-03-12",
+    "readTime": "8 min read",
+    "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80",
+    "featured": true,
+    "tags": ["affiliate marketing", "performance marketing", "monetization"],
+    "content": [
+      {
+        "type": "paragraph",
+        "content": "Affiliate marketing lets you earn by recommending products and services you genuinely believe in. The key is trust — audiences can tell when recommendations are authentic versus purely transactional."
+      },
+      {
+        "type": "heading",
+        "content": "Choose offers that match your audience"
+      },
+      {
+        "type": "paragraph",
+        "content": "Start with products your followers already need: tools, courses, software, or services related to your niche. Higher relevance means better click-through and conversion rates."
+      },
+      {
+        "type": "heading",
+        "content": "Create content that educates first"
+      },
+      {
+        "type": "list",
+        "content": [
+          "Share tutorials, comparisons, and honest reviews",
+          "Use clear disclosures and transparent affiliate links",
+          "Track clicks, conversions, and earnings per platform",
+          "Optimize top-performing content with retargeting or email follow-up"
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": "Affiliate marketing works best as part of a broader content strategy. Build value, recommend thoughtfully, and scale what converts."
       }
     ]
   },

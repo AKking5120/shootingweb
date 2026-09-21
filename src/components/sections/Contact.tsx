@@ -2,13 +2,14 @@
 
 import { useState, FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, Instagram, Linkedin, Youtube } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Linkedin, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
   siteConfig,
   socialLinks,
   contactFormServices,
   budgetRanges,
+  hasContactPhone,
 } from "@/data/site";
 import { cn } from "@/lib/utils";
 
@@ -117,13 +118,21 @@ export function Contact({ defaultService, compact = false }: ContactProps) {
                   <Mail size={18} className="text-accent-blue" />
                   {siteConfig.email}
                 </a>
-                <a
-                  href={`tel:${siteConfig.phone.replace(/\s/g, "")}`}
-                  className="flex items-center gap-3 text-muted transition-colors hover:text-white"
-                >
-                  <Phone size={18} className="text-accent-blue" />
-                  {siteConfig.phone}
-                </a>
+                {hasContactPhone(siteConfig.phone) && (
+                  <a
+                    href={`tel:${siteConfig.phone.replace(/\s/g, "")}`}
+                    className="flex items-center gap-3 text-muted transition-colors hover:text-white"
+                  >
+                    <Phone size={18} className="text-accent-blue" />
+                    {siteConfig.phone}
+                  </a>
+                )}
+                {siteConfig.address && (
+                  <p className="flex items-start gap-3 text-muted">
+                    <MapPin size={18} className="mt-0.5 shrink-0 text-accent-blue" />
+                    <span>{siteConfig.address}</span>
+                  </p>
+                )}
               </div>
 
               <div className="mt-8 flex gap-4">

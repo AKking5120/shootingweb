@@ -1,18 +1,25 @@
 export const siteConfig = {
   name: "SY Media & Marketing",
   shortName: "SY",
-  tagline: "Create. Market. Grow.",
+  tagline: "create.Market.Grow",
   positioning: "Digital Marketing • Media • Creative",
   description:
     "SY Media & Marketing helps brands grow through digital marketing, social media, content creation, performance marketing, photography and creative storytelling.",
   mainMessage:
     "We help brands grow through smart marketing, powerful content & creative storytelling.",
   url: "https://symediaandmarketing.com",
-  email: "hello@symediaandmarketing.com",
-  phone: "+91 XXXXX XXXXX",
-  whatsapp: "+91 XXXXX XXXXX",
+  email: "symediaandmarketing@gmail.com",
+  phone: "",
+  whatsapp: "",
+  address: "Alt-F Noida -62, near LIC Office, UP",
+  logo: "/images/general/logo.jpg",
   copyright: "© 2026 SY Media & Marketing. All rights reserved.",
 };
+
+export function hasContactPhone(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  return digits.length >= 10 && !phone.includes("X");
+}
 
 export const navLinks = [
   { label: "Home", href: "/" },

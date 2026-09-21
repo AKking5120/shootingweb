@@ -17,6 +17,16 @@ export function Footer() {
           <div className="text-center md:text-left">
             <Logo />
             <p className="mt-3 text-sm text-muted">{siteConfig.positioning}</p>
+            <p className="mt-2 text-sm text-muted">{siteConfig.tagline}</p>
+            {siteConfig.address && (
+              <p className="mt-2 max-w-xs text-sm text-muted">{siteConfig.address}</p>
+            )}
+            <a
+              href={`mailto:${siteConfig.email}`}
+              className="mt-2 inline-block text-sm text-muted transition-colors hover:text-white"
+            >
+              {siteConfig.email}
+            </a>
           </div>
 
           <nav

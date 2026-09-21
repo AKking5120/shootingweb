@@ -32,6 +32,12 @@ export const defaultFaqItems: FaqItem[] = [
     answer:
       "Absolutely. Our team handles reels, ad creatives, product shoots, brand films, and full video production — everything your brand needs to stand out online.",
   },
+  {
+    id: "faq-6",
+    question: "Where is SY Media & Marketing located?",
+    answer:
+      "We are based at Alt-F Noida -62, near LIC Office, UP. We work with clients across India and offer online consultations for brands everywhere.",
+  },
 ];
 
 export const defaultProcessSteps: ProcessStep[] = processSteps.map((step) => ({
