@@ -35,7 +35,7 @@ export const navLinks = [
 export const socialLinks = [
   {
     name: "Instagram",
-    href: "https://www.instagram.com/symediamarketing",
+    href: "https://www.instagram.com/symediamarketing?stkn=aWQybHNvc3YzNDNz",
     icon: "instagram" as const,
   },
   {
@@ -202,7 +202,7 @@ export const portfolio = [
     category: "Brand Awareness & Engagement",
     image:
       "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&q=80",
-    href: "https://www.instagram.com/symediamarketing",
+    href: "https://www.instagram.com/symediamarketing?stkn=aWQybHNvc3YzNDNz",
   },
   {
     id: "product-photo",
@@ -210,7 +210,7 @@ export const portfolio = [
     category: "E-commerce Brand Shoot",
     image:
       "https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80",
-    href: "https://www.instagram.com/symediamarketing",
+    href: "https://www.instagram.com/symediamarketing?stkn=aWQybHNvc3YzNDNz",
   },
   {
     id: "google-ads",
@@ -218,7 +218,7 @@ export const portfolio = [
     category: "Lead Generation & Sales Growth",
     image:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
-    href: "https://www.instagram.com/symediamarketing",
+    href: "https://www.instagram.com/symediamarketing?stkn=aWQybHNvc3YzNDNz",
   },
   {
     id: "video-production",

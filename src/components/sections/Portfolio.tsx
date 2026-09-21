@@ -24,7 +24,7 @@ export function Portfolio({ items = portfolio }: PortfolioProps) {
             className="!mb-0"
           />
           <Link
-            href="https://www.instagram.com/symediamarketing"
+            href="https://www.instagram.com/symediamarketing?stkn=aWQybHNvc3YzNDNz"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-semibold text-accent-blue transition-colors hover:text-accent-purple"
