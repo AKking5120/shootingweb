@@ -5,6 +5,7 @@ import { AdsTracking } from "@/components/AdsTracking";
 import { ConsultationPopup } from "@/components/ConsultationPopup";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { getSiteContent } from "@/lib/site-content";
+import { buildMetadata, getSiteUrl } from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({
@@ -26,40 +27,19 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "SY Media & Marketing | Digital Marketing • Media • Creative",
-  description: siteConfig.description,
-  keywords: [
-    "digital marketing",
-    "social media management",
-    "content creation",
-    "video production",
-    "photography",
-    "Google Ads",
-    "Meta Ads",
-    "brand growth",
-    "lead generation",
-    "performance marketing",
-  ],
+  metadataBase: new URL(getSiteUrl()),
+  ...buildMetadata({
+    title: `${siteConfig.name} | Digital Marketing • Media • Creative`,
+    description: siteConfig.description,
+    path: "/",
+  }),
   authors: [{ name: siteConfig.name }],
-  openGraph: {
-    title: "SY Media & Marketing | Digital Marketing • Media • Creative",
-    description: siteConfig.description,
-    url: siteConfig.url,
-    siteName: siteConfig.name,
-    type: "website",
-    locale: "en_IN",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "SY Media & Marketing | Digital Marketing • Media • Creative",
-    description: siteConfig.description,
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  category: "Digital Marketing",
   icons: {
     icon: "/favicon.svg",
+    apple: "/logo.jpg",
   },
 };
 

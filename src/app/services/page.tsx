@@ -2,39 +2,36 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Navbar } from "@/components/sections/Navbar";
 import { Footer } from "@/components/sections/Footer";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { ServicesMarquee } from "@/components/sections/ServicesMarquee";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { Results } from "@/components/sections/Results";
 import { ServicesEnquiry } from "@/components/sections/ServicesEnquiry";
 import { siteConfig, services, stats } from "@/data/site";
 import { Button } from "@/components/ui/Button";
+import { buildMetadata, getServicesPageSchema } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: `Services | ${siteConfig.name} — Digital Marketing & Creative`,
   description:
-    "Google Ads, Meta Ads, social media, content, video, photography & lead generation. Full-service digital marketing for brands that want to grow.",
+    "Google Ads, Meta Ads, social media, content, video, photography & lead generation. Full-service digital marketing for brands in Noida and across India.",
+  path: "/services",
   keywords: [
-    "Google Ads agency",
-    "Meta Ads",
+    "Google Ads agency Noida",
+    "Meta Ads management",
     "social media management",
     "content marketing",
     "video production",
     "product photography",
     "lead generation",
-    "digital marketing India",
+    "digital marketing services India",
   ],
-  openGraph: {
-    title: `Our Services | ${siteConfig.name}`,
-    description:
-      "7 premium digital marketing services — from performance ads to creative content.",
-    url: `${siteConfig.url}/services`,
-    type: "website",
-  },
-};
+});
 
 export default function ServicesPage() {
   return (
     <>
+      <JsonLd data={getServicesPageSchema()} />
       <Navbar solid />
       <main>
         <section className="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24">

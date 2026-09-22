@@ -3,20 +3,23 @@ import { Navbar } from "@/components/sections/Navbar";
 import { Footer } from "@/components/sections/Footer";
 import { BlogFilter } from "@/components/blog/BlogFilter";
 import { Button } from "@/components/ui/Button";
-import { siteConfig } from "@/data/site";
 import { getAllPosts } from "@/lib/blogs";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: "Blog | SY Media & Marketing",
   description:
     "Marketing insights, growth strategies, and creative tips from SY Media & Marketing. Learn about social media, paid ads, content, video, and brand growth.",
-  openGraph: {
-    title: "Blog | SY Media & Marketing",
-    description:
-      "Marketing insights, growth strategies, and creative tips from SY Media & Marketing.",
-    url: `${siteConfig.url}/blogs`,
-  },
-};
+  path: "/blogs",
+  keywords: [
+    "digital marketing blog",
+    "social media tips",
+    "content marketing guide",
+    "Google Ads tips",
+    "brand growth strategies",
+    "affiliate marketing guide",
+  ],
+});
 
 export default async function BlogsPage() {
   const posts = await getAllPosts();

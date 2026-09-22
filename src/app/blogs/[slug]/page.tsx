@@ -15,7 +15,13 @@ import {
 } from "@/lib/blogs";
 import { formatDate } from "@/lib/blog-utils";
 import { resolveImageSrc } from "@/lib/image-utils";
-import { siteConfig } from "@/data/site";
+import { JsonLd } from "@/components/seo/JsonLd";
+import {
+  buildMetadata,
+  getAbsoluteImageUrl,
+  getArticleSchema,
+  getBreadcrumbSchema,
+} from "@/lib/seo";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -33,18 +39,18 @@ export async function generateMetadata({
   const post = await getPostBySlug(slug);
   if (!post) return { title: "Post Not Found" };
 
-  return {
+  const imageUrl = resolveImageSrc(post.image);
+
+  return buildMetadata({
     title: `${post.title} | SY Media & Marketing`,
     description: post.excerpt,
-    openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      type: "article",
-      publishedTime: post.date,
-      images: [{ url: resolveImageSrc(post.image) }],
-      url: `${siteConfig.url}/blogs/${post.slug}`,
-    },
-  };
+    path: `/blogs/${post.slug}`,
+    image: imageUrl,
+    type: "article",
+    publishedTime: post.date,
+    authors: [post.author],
+    keywords: post.tags,
+  });
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
@@ -57,6 +63,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <>
+      <JsonLd
+        data={[
+          getArticleSchema(post, getAbsoluteImageUrl(imageSrc)),
+          getBreadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Blog", path: "/blogs" },
+            { name: post.title, path: `/blogs/${post.slug}` },
+          ]),
+        ]}
+      />
       <Navbar solid />
       <main>
         <article>
